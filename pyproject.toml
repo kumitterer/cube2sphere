@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cube2sphere"
+version = "0.13.0"
+description = "Utility to map 6 cube (cubemap, skybox) faces into an equirectangular (cylindrical projection, skysphere) map"
+readme = "README.md"
+authors = [
+    { name = "Tudor Brindus", email = "me@tbrindus.ca" },
+    { name = "Kumi", email = "cube2sphere@kumi.email" },
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Topic :: Artistic Software",
+]
+urls = { "Homepage" = "http://git.private.coffee/kumi/cube2sphere" }
+
+[project.scripts]
+cube2sphere = "cube2sphere.cube2sphere:main"
+
+[tool.setuptools.packages.find]
+include = ["cube2sphere"]
