@@ -37,3 +37,6 @@ cube2sphere = "cube2sphere.cube2sphere:main"
 
 [tool.setuptools.packages.find]
 include = ["cube2sphere"]
+
+[tool.setuptools.package-data]
+cube2sphere = ["projector.blend"]
