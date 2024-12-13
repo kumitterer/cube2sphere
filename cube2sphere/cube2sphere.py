@@ -21,7 +21,7 @@ class Cube2Sphere:
         right: os.PathLike,
         top: os.PathLike,
         bottom: os.PathLike,
-        resolution: Optional[tuple[int, int]] = (1024, 512),
+        resolution: Optional[tuple[int, int]] = (0, 0),
         rotation: tuple[int, int, int] = (0, 0, 0),
         output: os.PathLike = "out",
         fmt: str = "TGA",
