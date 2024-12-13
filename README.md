@@ -1,12 +1,13 @@
-cube2sphere [![PyPI version](https://badge.fury.io/py/cube2sphere.svg)](https://pypi.python.org/pypi/cube2sphere) [![PyPI](https://img.shields.io/pypi/pyversions/cube2sphere.svg)](https://pypi.python.org/pypi/cube2sphere)
-===========
+# cube2sphere [![PyPI version](https://badge.fury.io/py/cube2sphere.svg)](https://pypi.python.org/pypi/cube2sphere) [![PyPI](https://img.shields.io/pypi/pyversions/cube2sphere.svg)](https://pypi.python.org/pypi/cube2sphere)
 
 `cube2sphere` is a Python script to map 6 cube (cubemap, skybox) faces
 into an equirectangular (cylindrical projection, skysphere) map. See
 also [`sphere2cube`](https://github.com/Xyene/sphere2cube).
 
-Usage
-=====
+This fork allows using the tool programmatically from other Python scripts,
+without a detour through the command line.
+
+## Usage (Command Line)
 
     $ cube2sphere -h
     usage: cube2sphere [-h] [-v] [-r <width> <height>] [-R <rx> <ry> <rz>]
@@ -49,18 +50,41 @@ PNG, BMP, and FRAMESERVER.
 
 `cube2sphere` can be run in a headless environment (e.g., a server).
 
-Examples
-========
+### Examples
 
 If we wanted to stitch 6 cube faces named `${face}.jpg` into a 2048x1024
 TGA equirectangular map, we could use the following command:
 
     $ cube2sphere front.jpg back.jpg right.jpg left.jpg top.jpg bottom.jpg -r 2048 1024 -fTGA -ostitched
 
-This would generate `stitched.tga` in the working directory.
+This would generate `stitched0001.tga` in the working directory.
 
-Installation
-============
+## Usage (Python)
+
+```python
+import cube2sphere
+
+# Create a new cube2sphere instance
+c2s = cube2sphere.Cube2Sphere(
+    front='front.jpg',
+    back='back.jpg',
+    right='right.jpg',
+    left='left.jpg',
+    top='top.jpg',
+    bottom='bottom.jpg',
+    resolution=(2048, 1024),
+    format='TGA',
+    output='stitched',
+    blender_path='blender',
+    threads=4,
+    verbose=True
+)
+
+# Convert the cube faces to a sphere
+c2s.convert()
+```
+
+## Installation
 
 `cube2sphere` can be easily installed with `pip`. It requires a Python 3 installation.
 
@@ -69,23 +93,23 @@ listed in the system PATH environment variable. If it is not possible
 for PATH to be edited (as in the case of an unprivileged user), the path
 to the `blender` executable may instead be passed through the `-b` flag.
 
-Windows
--------
+### Windows
 
 Install Blender, and add `blender.exe` to `PATH`. Finally,
 
-    pip install cube2sphere
+    pip install git+https://git.private.coffee/kumi/cube2sphere.git
 
-Linux
------
+### Linux
+
+Most distributions come with Python 3 pre-installed. To install Blender
+and `cube2sphere` on Debian-based systems, run:
 
     $ apt-get install blender
-    $ pip install cube2sphere
+    $ pip install git+https://git.private.coffee/kumi/cube2sphere.git
 
-Mac OS X
---------
+### Mac OS X
 
 Similar to Windows, install Blender, and add the `blender` executable
 to `$PATH`. Then,
 
-    $ pip install cube2sphere
+    $ pip install git+https://git.private.coffee/kumi/cube2sphere.git
