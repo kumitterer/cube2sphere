@@ -100,39 +100,45 @@ class Cube2Sphere:
         out = open(os.devnull, "w") if not self.verbose else None
         faces_paths = [self.absolute_path(face) for face in self.faces.values()]
 
+        command = [
+            self.blender_path,
+            "-E",
+            "CYCLES",
+            "--background",
+            "-noaudio",
+            "-b",
+            os.path.join(
+                os.path.dirname(os.path.realpath(__file__)), "projector.blend"
+            ),
+            "-o",
+            self.output,
+            "-F",
+            self.format,
+            "-x",
+            "1",
+            "-P",
+            os.path.join(
+                os.path.dirname(os.path.realpath(__file__)), "blender_init.py"
+            ),
+        ]
+        + (["-t", str(self.threads)] if self.threads else [])
+        + [
+            "--",
+            *faces_paths,
+            str(self.resolution[0]),
+            str(self.resolution[1]),
+            str(self.rotation[0]),
+            str(self.rotation[1]),
+            str(self.rotation[2]),
+        ]
+
+        if self.verbose:
+            print("Running command:")
+            print(" ".join(command))
+
         try:
             process = subprocess.Popen(
-                [
-                    self.blender_path,
-                    "-E",
-                    "CYCLES",
-                    "--background",
-                    "-noaudio",
-                    "-b",
-                    os.path.join(
-                        os.path.dirname(os.path.realpath(__file__)), "projector.blend"
-                    ),
-                    "-o",
-                    self.output,
-                    "-F",
-                    self.format,
-                    "-x",
-                    "1",
-                    "-P",
-                    os.path.join(
-                        os.path.dirname(os.path.realpath(__file__)), "blender_init.py"
-                    ),
-                ]
-                + (["-t", str(self.threads)] if self.threads else [])
-                + [
-                    "--",
-                    *faces_paths,
-                    str(self.resolution[0]),
-                    str(self.resolution[1]),
-                    str(self.rotation[0]),
-                    str(self.rotation[1]),
-                    str(self.rotation[2]),
-                ],
+                command,
                 stderr=out,
                 stdout=out,
             )
