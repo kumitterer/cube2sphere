@@ -6,6 +6,12 @@ import math
 from .version import __version__
 from typing import Optional
 
+try:
+    from PIL import Image
+except ImportError:
+    print("Pillow is not installed, image resolution detection will not work")
+    Image = None
+
 
 class Cube2Sphere:
     def __init__(
@@ -16,7 +22,7 @@ class Cube2Sphere:
         right: os.PathLike,
         top: os.PathLike,
         bottom: os.PathLike,
-        resolution: tuple[int, int] = (1024, 512),
+        resolution: Optional[tuple[int, int]] = (1024, 512),
         rotation: tuple[int, int, int] = (0, 0, 0),
         output: os.PathLike = "out",
         fmt: str = "TGA",
@@ -33,7 +39,7 @@ class Cube2Sphere:
             right (os.PathLike): Path to the right face of the cube.
             top (os.PathLike): Path to the top face of the cube.
             bottom (os.PathLike): Path to the bottom face of the cube.
-            resolution (tuple[int, int], optional): Resolution of the output image. Defaults to (1024, 512).
+            resolution (tuple[int, int], optional): Resolution of the output image. Auto-detected if unspecified or set to (0, 0).
             rotation (tuple[int, int, int], optional): Rotation to apply before rendering the image. Defaults to (0, 0, 0).
             output (os.PathLike, optional): Path to save the output image. Defaults to "out".
             fmt (str, optional): Format of the output image. Defaults to "TGA".
@@ -66,10 +72,20 @@ class Cube2Sphere:
         Raises:
             ValueError: If any of the cube faces are not valid files.
             ValueError: If the number of threads is out of range.
+            ImportError: If Pillow is not installed and image resolution detection is required.
         """
 
         if not all(os.path.isfile(face) for face in self.faces.values()):
             raise ValueError("All cube faces must be valid files")
+
+        if not self.resolution or self.resolution == (0, 0):
+            if not Image:
+                raise ImportError("Image resolution detection requires Pillow")
+
+            front = self.faces["front"]
+            with Image.open(front) as img:
+                width, height = img.size
+                self.resolution = (width * 4, height * 2)
 
         if self.threads and (self.threads < 1 or self.threads > 64):
             raise ValueError("Too many threads specified (range is 1-64)")
@@ -163,9 +179,9 @@ def main():
         "--resolution",
         type=int,
         nargs=2,
-        default=[1024, 512],
+        default=[0, 0],
         metavar=("<width>", "<height>"),
-        help="resolution for rendered map (defaults to 1024x512)",
+        help="resolution for rendered map (auto-detected if unspecified)",
     )
     parser.add_argument(
         "-R",
