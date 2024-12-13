@@ -9,7 +9,6 @@ from typing import Optional
 try:
     from PIL import Image
 except ImportError:
-    print("Pillow is not installed, image resolution detection will not work")
     Image = None
 
 
@@ -246,6 +245,10 @@ def main():
             threads=args.threads,
             verbose=args.verbose,
         )
+
+        if Image is None:
+            print("Warning: Pillow is not installed, image resolution detection is disabled")
+
         cube2sphere.convert()
     except Exception as e:
         parser.print_usage()
